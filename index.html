@@ -129,8 +129,6 @@ main {
   gap: 2rem 1.5rem;
 }
 .card {
-  background: none;
-  border: 0;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -187,7 +185,8 @@ h2 {
   font-size: .95rem;
   color: var(--muted);
 }
-.clue strong { color: var(--text); font-weight: 600; }
+.clue strong,
+.footer-inner strong { color: var(--text); font-weight: 600; }
 .empty {
   font: 400 1rem var(--font-mono);
   color: var(--muted);
@@ -200,7 +199,6 @@ footer {
   color: var(--muted);
   font: 400 .95rem/1.65 var(--font-serif);
 }
-.footer-inner strong { color: var(--text); font-weight: 600; }
 footer .spread > p { margin: 0; }
 .sr-only {
   position: absolute;
@@ -269,13 +267,16 @@ function card(p, i) {
   return `<article class="card" data-category="${p.category}"><figure class="photo"><img src="images/${p.image}" alt="Our photograph of ${p.name}" loading="lazy" decoding="async"></figure><div class="content"><p class="meta"><span class="idx">${n}</span><span>${p.category}</span><span>${p.confidence}</span></p><h2>${p.name}</h2><p class="latin">${p.scientific}</p><p class="clue"><strong>Look for:</strong> ${p.clue}</p></div></article>`;
 }
 grid.innerHTML = plants.map(card).join('');
+filters.innerHTML = categories.map((c, i) => `<button type="button" data-filter="${c}" aria-pressed="${i === 0 ? 'true' : 'false'}">${c}</button>`).join('');
+const cards = grid.querySelectorAll('.card');
+const filterButtons = filters.querySelectorAll('button');
 function select(category) {
   if (!category) return;
-  filters.querySelectorAll('button').forEach(b => {
+  filterButtons.forEach(b => {
     b.setAttribute('aria-pressed', b.dataset.filter === category ? 'true' : 'false');
   });
   let shown = 0;
-  document.querySelectorAll('.card').forEach(c => {
+  cards.forEach(c => {
     const visible = category === 'All' || c.dataset.category === category;
     c.hidden = !visible;
     if (visible) shown++;
@@ -283,7 +284,6 @@ function select(category) {
   empty.style.display = shown ? 'none' : 'block';
   status.textContent = `${shown} sighting${shown === 1 ? '' : 's'} in ${category}`;
 }
-filters.innerHTML = categories.map((c, i) => `<button type="button" data-filter="${c}" aria-pressed="${i === 0 ? 'true' : 'false'}">${c}</button>`).join('');
 filters.addEventListener('click', e => {
   const btn = e.target.closest('button');
   if (btn && filters.contains(btn)) select(btn.dataset.filter);
