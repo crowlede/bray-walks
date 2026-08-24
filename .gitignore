@@ -1,1 +1,6 @@
 build_site.py
+
+# Compound Engineering: machine-local overrides and skill scratch
+.compound-engineering/*.local.yaml
+.context/compound-engineering/
+.claude/settings.local.json
